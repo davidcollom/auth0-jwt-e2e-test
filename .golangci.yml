@@ -1,0 +1,122 @@
+# golangci-lint configuration for Auth0 JWT E2E Test
+# This is a "hack together demo" so we'll be practical about linting rules
+# Schema: https://golangci-lint.run/jsonschema/golangci.jsonschema.json
+version: "2"
+run:
+  timeout: 5m
+  tests: true
+
+formatters:
+  enable:
+    - gofmt # Check gofmt formatting
+    - goimports # Check goimports formatting
+    - gci # Gci controls golang package import order
+
+  settings:
+    goimports:
+      local-prefixes:
+        - hack
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(hack)
+
+linters:
+  enable:
+    # Enabled by default (keeping these)
+    - errcheck # Check for unchecked errors
+    - govet # Standard go vet
+    - ineffassign # Detect ineffectual assignments
+    - staticcheck # Go static analysis
+    - unused # Check for unused constants, variables, functions and types
+
+    # Code quality & style
+    - misspell # Find commonly misspelled words [fast, auto-fix]
+    - revive # Replacement for golint [auto-fix]
+    - whitespace # Check for unnecessary newlines [fast, auto-fix]
+    - copyloopvar # Detect places where loop variables are copied [fast, auto-fix]
+    - godot # Check if comments end in a period [fast, auto-fix]
+    - dupword # Check for duplicate words [fast, auto-fix]
+
+    # Security (important for Auth0 integration)
+    - gosec # Security checker
+    - bodyclose # Check HTTP response body is closed
+    - errchkjson # Check types passed to json encoding
+
+    # Performance
+    - prealloc # Find slice declarations that could be pre-allocated [fast]
+    - perfsprint # Check fmt.Sprintf can be replaced with faster alternative [auto-fix]
+    - makezero # Find slice declarations with non-zero initial length
+
+    # Error handling (important for robust code)
+    - errorlint # Check error wrapping scheme [auto-fix]
+    - err113 # Check errors handling expressions [auto-fix]
+    - nilerr # Find code that returns nil even if it checks error
+
+    # Test improvements (for your test files)
+    - testifylint # Check testify usage [auto-fix]
+    - thelper # Detect test helpers missing t.Helper()
+
+    # Maintainability
+    - unconvert # Remove unnecessary type conversions
+    - usestdlibvars # Use variables/constants from Go stdlib [fast, auto-fix]
+    - wastedassign # Find wasted assignment statements
+
+  disable:
+    # Disable overly strict linters for this demo
+    - exhaustive # Enum exhaustiveness - too strict for demo
+    - exhaustruct # Struct field initialization - too strict for demo
+    - funlen # Function length - fine for demo
+    - gocyclo # Cyclomatic complexity - fine for demo
+    - gocognit # Cognitive complexity - fine for demo
+    - lll # Line length - fine for demo
+    - varnamelen # Variable name length - fine for demo
+    - maintidx # Maintainability index - too strict for demo
+    - gochecknoglobals # No global variables - fine for demo
+    - gochecknoinits # No init functions - fine for demo
+    - ireturn # Interface return types - too opinionated for demo
+    - wrapcheck # Error wrapping - too strict for demo
+    - nlreturn # New lines before return - too opinionated
+    - testpackage # Separate test package - fine for demo
+    - paralleltest # t.Parallel() usage - not needed for demo
+
+  settings:
+    errcheck:
+      # Don't check for errors in defer statements (common in tests)
+      exclude-functions:
+        - (*os.File).Close
+        - (*database/sql.DB).Close
+
+    gosec:
+      # Allow binding to all interfaces in tests
+      excludes:
+        - G102 # Binding to all interfaces
+
+    revive:
+      # Relaxed rules for demo code
+      rules:
+        - name: package-comments
+          disabled: true
+        - name: exported
+          disabled: true
+
+    testifylint:
+      # Configure testify linter for better test practices
+      enable-all: true
+      disable:
+        - require-error # Allow using assert for errors in demo
+
+    errorlint:
+      # Configure error linting
+      errorf: true
+      errorf-multi: true
+      asserts: true
+      comparison: true
+
+issues:
+  # Maximum count of issues with the same text. Set to 0 to disable.
+  max-same-issues: 0
+
+  # Show all issues from a linter
+  max-issues-per-linter: 0

@@ -15,9 +15,22 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	// Skip Auth0 tests in CI environment if credentials are not available
+	if os.Getenv("SKIP_AUTH0_TESTS") == "true" {
+		log.Println("Skipping Auth0 tests in CI environment")
+		os.Exit(m.Run())
+	}
+
 	domain := os.Getenv("AUTH0_DOMAIN") // e.g., "dev-xxxxx.auth0.com"
 	ClientID = os.Getenv("AUTH0_MANAGEMENT_CLIENT_ID")
 	clientSecret := os.Getenv("AUTH0_MANAGEMENT_CLIENT_SECRET")
+
+	// Check if we have the required environment variables
+	if domain == "" || ClientID == "" || clientSecret == "" {
+		log.Println("Missing Auth0 credentials. Set AUTH0_DOMAIN, AUTH0_MANAGEMENT_CLIENT_ID, and AUTH0_MANAGEMENT_CLIENT_SECRET")
+		log.Println("Skipping Auth0 integration tests...")
+		os.Exit(m.Run())
+	}
 
 	// Create a new Auth0 management client
 	mgmt, err := management.New(domain, ClientID, clientSecret)
@@ -34,9 +47,12 @@ func TestMain(m *testing.M) {
 	log.Println("Existing clients:", len(clients))
 	for _, client := range clients {
 		if *client.Name == "My E2E Auth App" {
-			mgmt.Client.Delete(*client.ClientID)
+			err := mgmt.Client.Delete(*client.ClientID)
+			if err != nil {
+				log.Printf("failed to delete existing client: %v", err)
+				continue
+			}
 			log.Printf("Deleted existing client: %s", *client.ClientID)
-			continue
 		}
 	}
 
@@ -92,11 +108,11 @@ func TestMain(m *testing.M) {
 	log.Println("Auth0 App created. Starting tests...")
 
 	m.Run()
-	log.Println("Tests completed. Exiting...")
 
+	log.Println("Tests completed. Exiting...")
 }
 
-// Helper functions to work with Auth0's string pointers
+// Helper functions to work with Auth0's string pointers.
 func auth0String(v string) *string {
 	return &v
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/chromedp/cdproto/network"
@@ -14,6 +15,11 @@ import (
 const BaseURL = "https://httpbin.org"
 
 func TestHomepage(t *testing.T) {
+	// Skip if Auth0 tests are disabled or JWT token is not available
+	if os.Getenv("SKIP_AUTH0_TESTS") == "true" || JWTToken == "" {
+		t.Skip("Skipping browser test - Auth0 integration not available")
+	}
+
 	t.Logf("Starting homepage test...")
 	ctx, cancel := chromedp.NewContext(t.Context())
 	defer cancel()
