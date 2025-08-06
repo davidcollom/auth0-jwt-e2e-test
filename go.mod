@@ -1,9 +1,9 @@
-module hack
+module github.com/davidcollom/auth0-jwt-e2e-test
 
 go 1.24.4
 
 require (
-	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327
+	github.com/chromedp/cdproto v0.0.0-20250803210736-d308e07a266d
 	github.com/chromedp/chromedp v0.14.1
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.30.0
@@ -11,7 +11,7 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/rehttp v0.0.0-20180310210549-11cf6ea5d3e9 // indirect
+	github.com/PuerkitoBio/rehttp v1.4.0 // indirect
 	github.com/aybabtme/iocontrol v0.0.0-20240617100617-d92f77f10b49 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
