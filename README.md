@@ -187,7 +187,9 @@ This is a hack demo, but improvements are welcome! Feel free to:
 
 ## License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**TL;DR**: Do whatever you want with this code, no guarantees provided! 🤷‍♂️
 
 ---
 
