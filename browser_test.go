@@ -9,6 +9,7 @@ import (
 
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
+	"github.com/golang-jwt/jwt"
 	"github.com/stretchr/testify/require"
 )
 
@@ -63,12 +64,24 @@ func TestHomepage(t *testing.T) {
 	}
 	require.NotEmpty(t, buf, "response body should not be empty")
 
-	t.Logf("✅ JSON body from /bearer: %s", buf)
+	t.Logf("✅ JSON body from /bearer")
 	var jsonBody JsonResponse
 	require.NoError(t, json.Unmarshal(buf, &jsonBody))
 
 	require.True(t, jsonBody.Authenticated, "authenticated key missing or wrong type")
 	require.NotEmpty(t, jsonBody.Token, "token key missing or wrong type")
+	// Skipping JWT token validation as requested
+	token, _, err := new(jwt.Parser).ParseUnverified(jsonBody.Token, jwt.MapClaims{})
+	require.NoError(t, err, "failed to parse JWT token (unverified)")
+	// Validate the alg is what you expect:
+	require.IsType(t, &jwt.SigningMethodRSA{}, token.Method, "unexpected signing method")
+	require.Equal(t, "JWT", token.Header["typ"], "unexpected signing algorithm")
+
+	// Set the issuer to match the expected value
+	require.Contains(t, token.Claims.(jwt.MapClaims)["iss"], "auth0.com", "unexpected issuer")
+	require.Contains(t, token.Claims.(jwt.MapClaims)["aud"], BaseURL, "unexpected audience")
+
+	require.NoError(t, err, "failed to parse/verify JWT token")
 }
 
 type JsonResponse struct {
