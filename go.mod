@@ -6,8 +6,8 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20250803210736-d308e07a266d
 	github.com/chromedp/chromedp v0.14.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/stretchr/testify v1.10.0
-	golang.org/x/oauth2 v0.30.0
+	github.com/stretchr/testify v1.11.1
+	golang.org/x/oauth2 v0.31.0
 	gopkg.in/auth0.v1 v1.3.0
 )
 
