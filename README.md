@@ -52,7 +52,7 @@ From your newly created M2M application, copy:
 - **Client Secret**
 
 ### Local Environment
-- **Go 1.24.4+** (check with `go version`)
+- **Go 1.27.3+** (check with `go version`)
 - **Chrome/Chromium** browser (for ChromeDP)
 
 ## Installation & Setup
