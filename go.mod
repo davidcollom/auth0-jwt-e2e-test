@@ -1,6 +1,6 @@
 module github.com/davidcollom/auth0-jwt-e2e-test
 
-go 1.24.4
+go 1.27.3
 
 require (
 	github.com/chromedp/cdproto v0.0.0-20250803210736-d308e07a266d
